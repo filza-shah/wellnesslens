@@ -1,0 +1,135 @@
+{
+  "model_name": "WellnessLens Risk Prediction Model v1.0",
+  "trained_at": "2026-05-01T22:55:53.807670+00:00",
+  "best_model": "random_forest",
+  "training_samples": 52000,
+  "test_samples": 13000,
+  "features": [
+    "age_numeric",
+    "gender_encoded",
+    "country_encoded",
+    "is_youth",
+    "sleep_hours",
+    "sleep_deprived",
+    "severely_sleep_deprived",
+    "activity_days_per_week",
+    "low_activity",
+    "anxiety_diagnosis",
+    "depression_diagnosis",
+    "sought_help",
+    "comorbid",
+    "social_support_encoded",
+    "socially_isolated",
+    "lifestyle_risk",
+    "youth_sleep_deprived"
+  ],
+  "n_features": 17,
+  "target": "high_risk (binary: 0=low risk, 1=high risk)",
+  "class_balance": {
+    "high_risk_rate": 0.1854
+  },
+  "best_model_metrics": {
+    "accuracy": 0.8555,
+    "f1_macro": 0.7889,
+    "f1_weighted": 0.8635,
+    "roc_auc": 0.9246,
+    "cv_f1_mean": 0.7873,
+    "cv_f1_std": 0.0032
+  },
+  "all_model_metrics": {
+    "logistic_regression": {
+      "accuracy": 0.8162,
+      "f1_macro": 0.7526,
+      "f1_weighted": 0.8315,
+      "roc_auc": 0.9099,
+      "cv_f1_mean": 0.7494,
+      "cv_f1_std": 0.0055
+    },
+    "random_forest": {
+      "accuracy": 0.8555,
+      "f1_macro": 0.7889,
+      "f1_weighted": 0.8635,
+      "roc_auc": 0.9246,
+      "cv_f1_mean": 0.7873,
+      "cv_f1_std": 0.0032
+    },
+    "gradient_boosting": {
+      "accuracy": 0.8888,
+      "f1_macro": 0.7935,
+      "f1_weighted": 0.8818,
+      "roc_auc": 0.9237,
+      "cv_f1_mean": 0.7937,
+      "cv_f1_std": 0.0034
+    }
+  },
+  "feature_importance": [
+    {
+      "feature": "anxiety_diagnosis",
+      "importance": 0.34730347305122355
+    },
+    {
+      "feature": "depression_diagnosis",
+      "importance": 0.28205750925812123
+    },
+    {
+      "feature": "comorbid",
+      "importance": 0.15960731744582304
+    },
+    {
+      "feature": "sleep_hours",
+      "importance": 0.059999386387249706
+    },
+    {
+      "feature": "sleep_deprived",
+      "importance": 0.04467254516476978
+    },
+    {
+      "feature": "age_numeric",
+      "importance": 0.04141100560130223
+    },
+    {
+      "feature": "is_youth",
+      "importance": 0.017960358493007103
+    },
+    {
+      "feature": "country_encoded",
+      "importance": 0.01332506713367815
+    },
+    {
+      "feature": "severely_sleep_deprived",
+      "importance": 0.012144795007868907
+    },
+    {
+      "feature": "lifestyle_risk",
+      "importance": 0.00512897472438893
+    },
+    {
+      "feature": "activity_days_per_week",
+      "importance": 0.004486661876654987
+    },
+    {
+      "feature": "social_support_encoded",
+      "importance": 0.0031993459073901857
+    },
+    {
+      "feature": "gender_encoded",
+      "importance": 0.002761313089262618
+    },
+    {
+      "feature": "youth_sleep_deprived",
+      "importance": 0.00229675805832792
+    },
+    {
+      "feature": "sought_help",
+      "importance": 0.0016760999865901055
+    },
+    {
+      "feature": "socially_isolated",
+      "importance": 0.000991474756987364
+    },
+    {
+      "feature": "low_activity",
+      "importance": 0.0009779140573541562
+    }
+  ]
+}
