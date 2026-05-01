@@ -152,14 +152,14 @@ with st.sidebar:
 
     st.markdown("---")
     st.markdown("### Navigation")
-    page = st.radio("", [
+    page = st.radio("Navigation", [
         "📊 Overview",
         "📈 Trends Over Time",
         "👥 Demographics",
         "😴 Lifestyle Factors",
         "🤖 Risk Predictor",
         "🔬 Statistical Tests",
-    ])
+    ], label_visibility="collapsed")
 
     st.markdown("---")
     st.markdown("**Data Sources**")
