@@ -2,6 +2,7 @@
 #
 # WellnessLens — Full Interactive Dashboard
 # Built with Streamlit + Plotly
+# Auto-run pipeline on startup
 
 import streamlit as st
 import pandas as pd
@@ -9,7 +10,19 @@ import numpy as np
 import plotly.express as px
 import plotly.graph_objects as go
 from pathlib import Path
+# Auto-run pipeline on startup
+from pathlib import Path
 
+if not Path("data/processed/unified_mental_health.csv").exists():
+    import subprocess
+    import sys
+    subprocess.run([sys.executable, "-m", "src.ingestion.download"], check=True)
+    subprocess.run([sys.executable, "-m", "src.processing.clean"], check=True)
+
+if not Path("data/models/risk_model.joblib").exists():
+    import subprocess
+    import sys
+    subprocess.run([sys.executable, "-m", "src.ml.train"], check=True)
 # ── Page config ───────────────────────────────────────────────────────────────
 st.set_page_config(
     page_title="WellnessLens — Youth Mental Health Analytics",
