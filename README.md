@@ -3,34 +3,31 @@
 **Population-level youth mental health analytics platform.**
 
 [![Python](https://img.shields.io/badge/Python-3.12-3776AB?style=flat&logo=python&logoColor=white)](https://python.org)
-[![Streamlit](https://img.shields.io/badge/Streamlit-1.35-FF4B4B?style=flat&logo=streamlit&logoColor=white)](https://streamlit.io)
+[![Streamlit](https://img.shields.io/badge/Streamlit-1.57-FF4B4B?style=flat&logo=streamlit&logoColor=white)](https://streamlit.io)
 [![scikit-learn](https://img.shields.io/badge/scikit--learn-1.5-F7931E?style=flat&logo=scikit-learn&logoColor=white)](https://scikit-learn.org)
-[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-4169E1?style=flat&logo=postgresql&logoColor=white)](https://postgresql.org)
 [![Docker](https://img.shields.io/badge/Docker-Compose-2496ED?style=flat&logo=docker&logoColor=white)](https://docker.com)
 
-🔗 **Live:** [wellnesslens.streamlit.app](https://wellnesslens.streamlit.app) &nbsp;|&nbsp; 🧠 **Companion project:** [MindGuard](https://github.com/filza-shah/mindguard)
+🔗 **Live:** [wellnesslens-filzashah.streamlit.app](https://wellnesslens-filzashah.streamlit.app) &nbsp;|&nbsp; 🧠 **Companion project:** [MindGuard](https://github.com/filza-shah/mindguard)
 
 ---
 
 ## Overview
 
-WellnessLens combines CDC BRFSS and Statistics Canada / CAMH OSDUHS datasets — 65,000 records across 2015–2023 — to surface population-level insights about youth mental health trends. It's the research layer that MindGuard's anomaly detection baselines are built on top of.
+WellnessLens combines CDC BRFSS (USA), Statistics Canada / CAMH OSDUHS (Canada), and Pakistan NPMS + Global School Health Survey data — 75,000 records across 2015–2023 — to surface population-level insights about youth mental health trends across three very different national contexts.
 
-While MindGuard collects individual mood data, WellnessLens analyses what population-level data tells us about risk factors, trends, and intervention opportunities for young people aged 10–25.
-
-I built this as a companion project to MindGuard to show I understand the research behind what I built — not just the engineering.
+It's the research layer that MindGuard's anomaly detection baselines are built on top of. While MindGuard tracks individual mood data, WellnessLens analyses what population-level data tells us about risk factors, trends, and the scale of the intervention gap — particularly in Pakistan where help-seeking rates are dramatically lower than North America.
 
 ---
 
 ## What it does
 
-**Data pipeline** downloads and cleans two public datasets, merges them into a unified 65,000-record dataset with a standardized schema, and computes a mental health risk score for each record.
+**Data pipeline** downloads and cleans three public datasets, merges them into a unified 75,000-record schema, and computes a standardized mental health risk score for each record.
 
-**Statistical analysis** runs year-over-year trend detection, age group and gender breakdowns, sleep and activity correlations, country comparisons (USA vs Canada), and formal significance testing (t-tests, ANOVA, chi-square) to prove findings are statistically real.
+**Statistical analysis** runs year-over-year trend detection, age group and gender breakdowns, sleep and activity correlations, formal significance testing (t-tests, ANOVA, chi-square), and a three-country comparison.
 
-**ML model** trains a Random Forest classifier to predict mental health risk from demographic and lifestyle features. Selected from three candidates (Logistic Regression, Random Forest, Gradient Boosting) by ROC-AUC on a held-out test set.
+**ML model** trains a Random Forest classifier to predict mental health risk from demographic and lifestyle features — selected from three candidates by ROC-AUC on a held-out test set.
 
-**Interactive dashboard** exposes all of this through a 6-page Streamlit app with filters, Plotly charts, and a live risk predictor.
+**Interactive dashboard** exposes everything through a 7-page Streamlit app with sidebar filters and Plotly charts.
 
 ---
 
@@ -38,11 +35,25 @@ I built this as a companion project to MindGuard to show I understand the resear
 
 | Finding | Value | Significance |
 |---------|-------|-------------|
-| Youth (12-24) risk vs adults 25+ | 33.0 vs 28.7 | F=52.1, p<0.0001 |
+| Youth (11–24) risk vs adults 25+ | 33.0 vs 28.7 | F=52.1, p<0.0001 |
 | Sleep <5h vs 7-8h risk difference | +10.5 risk points | t=47.8, p<0.0001 |
+| Pakistan vs USA risk gap | higher by ~8 points | p<0.0001 |
+| Pakistan help-seeking rate | ~15% vs ~40% (USA) | cultural stigma barrier |
 | Canada vs USA risk gap | 31.3 vs 29.0 | p<0.0001 |
-| Gender gap (F vs M) | 30.3 vs 29.7 | p=0.0002, negligible effect |
-| Help-seeking: high vs low risk | 40% vs 41% | not significant |
+| Gender gap (F vs M) | statistically significant | negligible effect size |
+
+---
+
+## Pakistan Data
+
+Pakistan data is modelled from published peer-reviewed research — there is no freely downloadable individual-level dataset, so we model realistic synthetic records from aggregate statistics:
+
+- **Khalid et al. (2019):** 17.2% depression, 21.4% anxiety in ages 11–18
+- **Ghazal (2022):** ~53% of high school students experience anxiety/depression
+- **National Psychiatric Morbidity Survey Pakistan (2022):** first nationally representative study, 17,773 adults
+- **Global School Health Survey Pakistan (2009):** lifestyle and mental health in ages 13–15
+
+Key differences from North America: higher anxiety rates, dramatically lower help-seeking (~15% vs ~40%), less physical activity, and girls significantly more anxious than boys across all studies.
 
 ---
 
@@ -52,8 +63,8 @@ I built this as a companion project to MindGuard to show I understand the resear
 |----------|---------|
 | Architecture | Random Forest (100 trees, max depth 8) |
 | Features | 17 (demographics, lifestyle, mental health history, interactions) |
-| Training samples | 52,000 |
-| Test samples | 13,000 |
+| Training samples | 60,000 |
+| Test samples | 15,000 |
 | Accuracy | 85.5% |
 | F1 macro | 0.789 |
 | ROC-AUC | **0.925** |
@@ -67,15 +78,17 @@ Full model card: [MODEL_CARD.md](./MODEL_CARD.md)
 
 ## Dashboard Pages
 
-**Overview** — key metrics, insight cards, risk distribution, country comparison
+**Overview** — key metrics, insight cards, risk distribution, high risk by country
 
-**Trends Over Time** — year-over-year risk, anxiety/depression rates, USA vs Canada line chart
+**Trends Over Time** — year-over-year risk, anxiety/depression rates, country trend lines
 
 **Demographics** — risk by age group, gender breakdown, age × year heatmap
 
 **Lifestyle Factors** — sleep duration vs risk, social support impact
 
-**Risk Predictor** — enter any profile and get a real-time ML prediction
+**Country Comparison** — USA vs Canada vs Pakistan with summary table, bar charts, and Pakistan research context
+
+**Risk Predictor** — enter any profile and get a real-time ML prediction with country-specific crisis resources
 
 **Statistical Tests** — significance test results table, feature correlation heatmap
 
@@ -89,7 +102,6 @@ Full model card: [MODEL_CARD.md](./MODEL_CARD.md)
 | Statistical analysis | scipy (t-tests, ANOVA, chi-square) |
 | Machine learning | scikit-learn (Random Forest, LR, GBM) |
 | Dashboard | Streamlit, Plotly |
-| Database | PostgreSQL 16 |
 | Infrastructure | Docker, Docker Compose |
 | CI/CD | GitHub Actions |
 | Deployment | Streamlit Cloud |
@@ -101,27 +113,20 @@ Full model card: [MODEL_CARD.md](./MODEL_CARD.md)
 ```
 wellnesslens/
 ├── src/
-│   ├── ingestion/
-│   │   └── download.py         # Downloads CDC + Statistics Canada datasets
-│   ├── processing/
-│   │   └── clean.py            # Cleans, merges → 65k unified dataset
+│   ├── ingestion/download.py       # CDC + Canada + Pakistan datasets
+│   ├── processing/clean.py         # Cleans, merges → 75k unified dataset
 │   ├── analysis/
-│   │   ├── trends.py           # Year-over-year trend analysis
-│   │   ├── correlations.py     # Sleep, activity, social support
-│   │   ├── significance.py     # t-tests, ANOVA, chi-square
-│   │   └── insights.py        # Key findings aggregator
+│   │   ├── trends.py               # Year-over-year trend analysis
+│   │   ├── correlations.py         # Sleep, activity, social support
+│   │   ├── significance.py         # t-tests, ANOVA, chi-square
+│   │   └── insights.py             # Key findings aggregator
 │   ├── ml/
-│   │   ├── features.py         # Feature engineering (17 features)
-│   │   ├── train.py            # Trains 3 models, selects best by AUC
-│   │   └── evaluate.py        # Evaluation + predict_single()
-│   └── dashboard/
-│       └── app.py              # 6-page Streamlit dashboard
-├── data/
-│   ├── raw/                    # Downloaded datasets (git-ignored)
-│   ├── processed/              # Unified dataset (git-ignored)
-│   └── models/                 # Trained model (git-ignored)
-├── tests/                      # 7 pipeline tests
-├── .github/workflows/ci.yml    # GitHub Actions
+│   │   ├── features.py             # Feature engineering (17 features)
+│   │   ├── train.py                # Trains 3 models, selects best
+│   │   └── evaluate.py             # Evaluation + predict_single()
+│   └── dashboard/app.py            # 7-page Streamlit dashboard
+├── tests/                          # 7 pipeline tests
+├── .github/workflows/ci.yml        # GitHub Actions
 ├── docker-compose.yml
 ├── MODEL_CARD.md
 └── requirements.txt
@@ -145,41 +150,27 @@ python -m src.ml.train
 streamlit run src/dashboard/app.py
 ```
 
-Or with Docker:
-
-```bash
-docker-compose up --build
-```
-
----
-
-## Tests
-
-```bash
-pytest tests/ -v
-```
-
-7 tests covering data shape, null checks, risk score range, feature engineering, and model prediction output.
-
 ---
 
 ## Limitations
 
-1. **Modelled data** — training data built from published aggregate statistics rather than individual-level raw records. Distributions match published CDC/CAMH findings but individual-level correlations are modelled, not measured.
+1. **Modelled data** — all three datasets are built from published aggregate statistics rather than raw individual-level records. Distributions match published findings but individual-level correlations are modelled, not measured.
 
-2. **US/Canada only** — findings may not generalize to other geographies or cultural contexts without retraining on local data.
+2. **Pakistan scope** — limited to school-going youth in urban areas. Rural Pakistan, out-of-school youth, and adults are underrepresented in the source research.
 
-3. **Feature scope** — does not include socioeconomic status, trauma history, or family mental health history — all known risk factors.
+3. **US/Canada/Pakistan only** — findings may not generalize to other geographies without retraining.
 
-4. **Class imbalance** — 18.5% high-risk rate. The model handles this with class balancing but precision on the minority class is limited.
+4. **Feature scope** — does not include socioeconomic status, trauma history, or family mental health history — all known risk factors.
 
 ---
 
 ## How it connects to MindGuard
 
-MindGuard detects when an individual's mood deviates from their personal baseline using Z-score analysis. The baseline thresholds — what counts as "normal" vs "concerning" — are informed by the population-level risk distributions WellnessLens surfaces.
+MindGuard uses Z-score analysis to detect when an individual's mood deviates from their personal baseline. The population-level risk distributions WellnessLens surfaces — particularly the Pakistan data — inform what constitutes a meaningful deviation for youth in different cultural contexts.
 
-Resume line: *"Built WellnessLens as a companion analytics platform to MindGuard, analysing 65,000+ population-level mental health records to validate individual anomaly detection baselines and surface youth wellbeing trends across the US and Canada."*
+The Pakistan Country Comparison page also provides the research foundation for the potential Sandbox Pakistan partnership: the data makes clear just how large the gap is between mental health need and help-seeking in Pakistani schools.
+
+**Resume line:** *"Built WellnessLens as a companion analytics platform to MindGuard, analysing 75,000+ population-level mental health records across USA, Canada, and Pakistan to surface youth wellbeing trends and validate individual anomaly detection baselines."*
 
 ---
 
@@ -191,4 +182,4 @@ Resume line: *"Built WellnessLens as a companion analytics platform to MindGuard
 
 ---
 
-*Not a clinical tool. For mental health support: call/text 988 or text HOME to 741741.*
+*Not a clinical tool. For mental health support: call/text 988 (USA/Canada) · Pakistan: Umang helpline 0317-4288665*
